@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BREAKTHROUGH</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --black: #0a0a0a;
+  --red: #c0392b;
+  --off-white: #f0ede8;
+  --gray: #888;
+  --light: #d4d0ca;
+  --panel: #111111;
+  --border: #1e1e1e;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--off-white);
+  font-family: 'Barlow Condensed', sans-serif;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.28;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(10,10,10,0.97);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  display: flex; align-items: stretch; height: 52px;
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: .1em;
+  color: var(--off-white); padding: 0 28px;
+  display: flex; align-items: center;
+  border-right: 1px solid var(--border); flex-shrink: 0;
+}
+.nav-logo span { color: var(--red); }
+.nav-tabs { display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none; }
+.nav-tabs::-webkit-scrollbar { display: none; }
+.nav-tab {
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--gray);
+  padding: 0 22px; border: none; background: none; cursor: pointer;
+  border-bottom: 2px solid transparent; transition: all .2s;
+  white-space: nowrap; display: flex; align-items: center;
+}
+.nav-tab:hover { color: var(--off-white); }
+.nav-tab.active { color: var(--off-white); border-bottom-color: var(--red); }
+
+/* PAGES */
+.page { display: none; padding-top: 52px; min-height: 100vh; }
+.page.active { display: block; }
+
+/* HERO */
+.hero {
+  min-height: calc(100vh - 52px);
+  display: grid; grid-template-columns: 1fr 1fr;
+  position: relative; overflow: hidden;
+}
+.hero-left {
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 60px 50px 70px 60px; position: relative; z-index: 2;
+}
+.hero-right { position: relative; overflow: hidden; }
+.hero::after {
+  content: ''; position: absolute; top: -10%; left: 48%; width: 8px; height: 120%;
+  background: var(--red); transform: rotate(3deg); z-index: 3;
+  box-shadow: 0 0 60px rgba(192,57,43,.4);
+}
+.eyebrow {
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .28em;
+  color: var(--red); text-transform: uppercase; margin-bottom: 18px;
+  opacity: 0; animation: fadeUp .6s .15s ease forwards;
+}
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(90px,14vw,170px); line-height: .88;
+  color: var(--off-white); letter-spacing: -.01em;
+  opacity: 0; animation: fadeUp .7s .3s ease forwards;
+}
+.hero-title span { color: var(--red); display: block; }
+.hero-subtitle {
+  font-size: 17px; font-weight: 300; letter-spacing: .05em;
+  color: var(--light); margin-top: 26px; max-width: 340px; line-height: 1.65;
+  opacity: 0; animation: fadeUp .7s .5s ease forwards;
+}
+.scroll-hint {
+  position: absolute; bottom: 28px; left: 60px;
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .2em;
+  color: var(--gray); text-transform: uppercase;
+  display: flex; align-items: center; gap: 12px;
+  opacity: 0; animation: fadeIn 1s 1.2s ease forwards;
+}
+.scroll-hint::before { content:''; width:36px; height:1px; background:var(--gray); display:block; }
+.shoe-side {
+  width:100%; height:100%;
+  display:flex; align-items:center; justify-content:center;
+  background:#0e0e0e; position:relative;
+}
+.shoe-side::before {
+  content:''; position:absolute; inset:0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.015) 40px),
+              repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.015) 40px);
+}
+.shoe-graphic { position:relative; text-align:center; opacity:0; animation:fadeIn 1s .8s ease forwards; }
+.shoe-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.22em; color:var(--red); text-transform:uppercase; margin-bottom:18px; }
+.shoe-svg { width:280px; height:auto; }
+.pulse-dot { animation: pulse 2.2s ease-in-out infinite; }
+.pulse-dot:nth-child(2){animation-delay:.5s} .pulse-dot:nth-child(3){animation-delay:1s}
+@keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
+.wheel-line { stroke-dasharray:200; stroke-dashoffset:200; animation:drawLine 1.8s 1s ease forwards; }
+@keyframes drawLine{to{stroke-dashoffset:0}}
+
+/* MARQUEE */
+.marquee-wrap { padding:13px 0; overflow:hidden; white-space:nowrap; }
+.marquee-wrap.red-bg { background:var(--red); }
+.marquee-wrap.dark-bg { background:var(--black); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+.marquee-track { display:inline-flex; animation:marquee 30s linear infinite; }
+.marquee-track.rev { animation-direction:reverse; animation-duration:24s; }
+.marquee-track span {
+  font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:.12em; padding:0 20px;
+}
+.red-bg .marquee-track span { color:var(--black); }
+.red-bg .marquee-track .dot { color:rgba(0,0,0,.28); }
+.dark-bg .marquee-track span { color:var(--red); }
+.dark-bg .marquee-track .dot { color:#2a2a2a; }
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SHARED */
+.sec { padding:90px 60px; }
+.section-tag {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.28em;
+  color:var(--red); text-transform:uppercase; margin-bottom:32px;
+  display:flex; align-items:center; gap:16px;
+}
+.section-tag::after { content:''; flex:1; height:1px; background:var(--border); max-width:300px; }
+.sec-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(36px,5vw,64px); line-height:.92;
+  color:var(--off-white); margin-bottom:24px;
+}
+.sec-body { font-size:17px; font-weight:300; color:var(--light); line-height:1.7; max-width:720px; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:2px; }
+
+/* HOME */
+.logline { padding:90px 60px; max-width:960px; margin:0 auto; }
+.logline-text { font-family:'Barlow Condensed',sans-serif; font-size:clamp(22px,3.2vw,42px); font-weight:700; line-height:1.22; color:var(--off-white); }
+.logline-text em { color:var(--red); font-style:normal; }
+.premise-block {
+  background:var(--panel); padding:36px 38px;
+  position:relative; overflow:hidden; transition:background .25s;
+}
+.premise-block:hover { background:#141414; }
+.premise-block::before {
+  content:attr(data-num); position:absolute; top:-16px; right:16px;
+  font-family:'Bebas Neue',sans-serif; font-size:110px;
+  color:rgba(255,255,255,.025); pointer-events:none;
+}
+.premise-block h3 { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:.06em; color:var(--red); margin-bottom:10px; }
+.premise-block p { font-size:15px; font-weight:300; line-height:1.65; color:var(--light); }
+.quote-panel { padding:80px 60px; background:var(--red); position:relative; overflow:hidden; }
+.quote-panel::before {
+  content:'"'; position:absolute; top:-50px; left:30px;
+  font-family:'Bebas Neue',sans-serif; font-size:420px;
+  color:rgba(0,0,0,.1); line-height:1; pointer-events:none;
+}
+.quote-text { font-family:'Barlow Condensed',sans-serif; font-size:clamp(20px,2.8vw,38px); font-weight:700; color:var(--black); line-height:1.28; max-width:800px; position:relative; z-index:1; }
+.quote-attr { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.2em; color:rgba(0,0,0,.4); text-transform:uppercase; margin-top:22px; position:relative; z-index:1; }
+.ask { padding:90px 60px; text-align:center; background:#0d0d0d; border-top:1px solid var(--border); }
+.ask-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(48px,8vw,96px); color:var(--off-white); line-height:.9; margin-bottom:28px; }
+.ask-body { font-size:17px; font-weight:300; color:var(--light); line-height:1.7; max-width:520px; margin:0 auto 46px; }
+.cta-row { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+.cta { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:.12em; padding:14px 38px; text-decoration:none; cursor:pointer; transition:all .2s; border:none; }
+.cta-primary { background:var(--red); color:var(--black); }
+.cta-primary:hover { background:#e74c3c; transform:translateY(-2px); }
+.cta-secondary { background:transparent; color:var(--off-white); border:1px solid #333; }
+.cta-secondary:hover { border-color:var(--off-white); }
+
+/* CHAPTERS */
+.chapter-hero { padding:60px 60px 40px; border-bottom:1px solid var(--border); }
+.ch-nav { display:flex; gap:2px; flex-wrap:wrap; }
+.ch-btn {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.15em;
+  padding:8px 16px; background:var(--panel); color:var(--gray);
+  border:none; cursor:pointer; transition:all .2s;
+}
+.ch-btn:hover { background:#1a1a1a; color:var(--off-white); }
+.ch-btn.active { background:var(--red); color:var(--black); }
+.chapter-display { display:grid; grid-template-columns:280px 1fr; min-height:70vh; }
+.chapter-sidebar {
+  border-right:1px solid var(--border); padding:40px 30px;
+  background:#0c0c0c; position:sticky; top:52px;
+  height:calc(100vh - 52px); overflow-y:auto;
+}
+.ch-num { font-family:'Bebas Neue',sans-serif; font-size:110px; color:#1a1a1a; line-height:.85; margin-bottom:4px; }
+.ch-tag { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.22em; color:var(--red); text-transform:uppercase; margin-bottom:10px; }
+.ch-title { font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--off-white); letter-spacing:.04em; margin-bottom:20px; line-height:1.1; }
+.ch-acts { display:flex; flex-direction:column; gap:2px; margin-top:24px; }
+.ch-act { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.15em; color:var(--gray); padding:8px 12px; background:var(--panel); text-transform:uppercase; }
+.ch-act span { color:var(--red); margin-right:8px; }
+.chapter-main { padding:50px 60px; }
+.ch-hook { font-family:'Barlow Condensed',sans-serif; font-size:clamp(19px,2.4vw,30px); font-weight:700; color:var(--off-white); line-height:1.3; max-width:680px; margin-bottom:30px; border-left:4px solid var(--red); padding-left:20px; }
+.ch-body { font-size:15px; font-weight:300; color:var(--light); line-height:1.75; max-width:680px; margin-bottom:16px; }
+.ch-moment { background:var(--panel); border-left:3px solid var(--red); padding:20px 24px; margin:28px 0; max-width:680px; }
+.ch-moment-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.2em; color:var(--red); text-transform:uppercase; margin-bottom:8px; }
+.ch-moment p { font-size:15px; font-weight:300; color:var(--light); line-height:1.6; font-style:italic; }
+.ch-stat-row { display:flex; gap:2px; margin:32px 0; max-width:680px; flex-wrap:wrap; }
+.ch-stat { background:var(--panel); padding:16px 20px; flex:1; min-width:100px; }
+.ch-stat-num { font-family:'Bebas Neue',sans-serif; font-size:36px; color:var(--red); line-height:1; display:block; }
+.ch-stat-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.15em; color:var(--gray); text-transform:uppercase; margin-top:4px; }
+
+/* CHARACTERS */
+.char-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; padding:2px; }
+.char-card { background:var(--panel); cursor:pointer; transition:background .2s; position:relative; overflow:hidden; }
+.char-card:hover { background:#141414; }
+.char-card-top { padding:32px 28px 20px; border-bottom:1px solid var(--border); }
+.char-card-name { font-family:'Bebas Neue',sans-serif; font-size:46px; color:var(--off-white); line-height:.9; margin-bottom:6px; }
+.char-card-alias { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.2em; color:var(--red); text-transform:uppercase; }
+.char-card-body { padding:20px 28px; }
+.char-card-body p { font-size:14px; font-weight:300; color:var(--light); line-height:1.65; margin-bottom:16px; }
+.char-card-stats { display:flex; flex-direction:column; gap:1px; }
+.cstat { display:flex; align-items:center; gap:12px; padding:7px 0; border-top:1px solid var(--border); }
+.cstat-key { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:.12em; color:var(--gray); text-transform:uppercase; width:90px; flex-shrink:0; }
+.cstat-bar { flex:1; height:2px; background:#1e1e1e; }
+.cstat-fill { height:100%; background:var(--red); transition:width 1.2s ease; }
+.char-detail {
+  display:none; grid-column:1/-1;
+  background:#0c0c0c; border:1px solid var(--border);
+  padding:50px 60px; position:relative;
+}
+.char-detail.open { display:grid; grid-template-columns:1fr 1fr; gap:60px; }
+.char-detail-close {
+  position:absolute; top:20px; right:24px;
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.2em;
+  color:var(--gray); background:none; border:none; cursor:pointer; text-transform:uppercase;
+}
+.char-detail-close:hover { color:var(--off-white); }
+.detail-name { font-family:'Bebas Neue',sans-serif; font-size:80px; line-height:.85; color:var(--off-white); margin-bottom:6px; }
+.detail-alias { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.22em; color:var(--red); text-transform:uppercase; margin-bottom:28px; }
+.detail-body { font-size:15px; font-weight:300; color:var(--light); line-height:1.75; margin-bottom:14px; }
+.detail-quotes { display:flex; flex-direction:column; gap:14px; margin-top:24px; }
+.detail-quote { background:var(--panel); border-left:3px solid var(--red); padding:14px 18px; font-size:14px; font-style:italic; color:var(--light); line-height:1.6; }
+.detail-quote-src { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.15em; color:var(--gray); margin-top:8px; font-style:normal; }
+
+/* GEAR */
+.gear-hero { padding:60px 60px 40px; border-bottom:1px solid var(--border); }
+.gear-big-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; }
+.gear-card { background:var(--panel); overflow:hidden; }
+.gear-card-top { padding:36px 36px 20px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; }
+.gear-card-name { font-family:'Bebas Neue',sans-serif; font-size:42px; color:var(--off-white); letter-spacing:.04em; line-height:.95; }
+.gear-card-status { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.15em; color:var(--red); text-transform:uppercase; text-align:right; flex-shrink:0; max-width:180px; }
+.gear-card-body { padding:24px 36px 30px; }
+.gear-card-body p { font-size:15px; font-weight:300; color:var(--light); line-height:1.7; margin-bottom:20px; }
+.gear-specs { display:flex; flex-direction:column; gap:1px; }
+.gear-spec { display:flex; gap:16px; padding:9px 12px; background:#0e0e0e; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.06em; }
+.gear-spec-key { color:var(--gray); width:130px; flex-shrink:0; text-transform:uppercase; font-size:9px; letter-spacing:.12em; }
+.gear-spec-val { color:var(--off-white); }
+.gear-spec-val.warn { color:var(--red); }
+
+/* LORE */
+.lore-layout { display:grid; grid-template-columns:220px 1fr; min-height:calc(100vh - 52px); }
+.lore-sidebar { border-right:1px solid var(--border); background:#0c0c0c; padding:40px 0; position:sticky; top:52px; height:calc(100vh - 52px); overflow-y:auto; }
+.lore-nav-item {
+  display:block; padding:12px 28px;
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.15em;
+  text-transform:uppercase; color:var(--gray);
+  background:none; border:none; cursor:pointer; text-align:left; width:100%;
+  border-left:2px solid transparent; transition:all .2s;
+}
+.lore-nav-item:hover { color:var(--off-white); background:rgba(255,255,255,.02); }
+.lore-nav-item.active { color:var(--off-white); border-left-color:var(--red); background:rgba(192,57,43,.06); }
+.lore-content { padding:60px; }
+.lore-title { font-family:'Bebas Neue',sans-serif; font-size:56px; color:var(--off-white); line-height:.9; margin-bottom:8px; }
+.lore-subtitle { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.22em; color:var(--red); text-transform:uppercase; margin-bottom:36px; padding-bottom:24px; border-bottom:1px solid var(--border); }
+.lore-body { font-size:16px; font-weight:300; color:var(--light); line-height:1.8; max-width:680px; margin-bottom:16px; }
+.lore-callout { background:var(--panel); border-left:3px solid var(--red); padding:20px 24px; margin:28px 0; max-width:680px; }
+.lore-callout-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.2em; color:var(--red); text-transform:uppercase; margin-bottom:8px; }
+.lore-callout p { font-size:14px; font-weight:300; color:var(--light); line-height:1.65; font-style:italic; }
+.lore-list { max-width:680px; display:flex; flex-direction:column; gap:2px; margin:20px 0; }
+.lore-list-item { background:var(--panel); padding:16px 20px; display:grid; grid-template-columns:150px 1fr; gap:20px; }
+.lore-list-key { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.14em; color:var(--red); text-transform:uppercase; align-self:start; padding-top:2px; }
+.lore-list-val { font-size:14px; font-weight:300; color:var(--light); line-height:1.6; }
+
+/* FOOTER */
+footer { padding:36px 60px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; background:#080808; }
+.f-title { font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--off-white); letter-spacing:.08em; }
+.f-title span { color:var(--red); }
+.f-note { font-family:'DM Mono',monospace; font-size:10px; color:var(--gray); letter-spacing:.12em; }
+
+/* ANIM */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.reveal { opacity:0; transform:translateY(20px); transition:opacity .65s ease,transform .65s ease; }
+.reveal.visible { opacity:1; transform:none; }
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}.hero-right{height:260px}.hero::after{display:none}
+  .hero-left,.logline,.sec,.chapter-main,.lore-content,.gear-hero,.chapter-hero{padding-left:28px;padding-right:28px}
+  .grid-2,.char-grid,.gear-big-grid{grid-template-columns:1fr}
+  .chapter-display{grid-template-columns:1fr}.chapter-sidebar{position:static;height:auto}
+  .lore-layout{grid-template-columns:1fr}
+  .lore-sidebar{position:static;height:auto;display:flex;flex-wrap:wrap;padding:16px;gap:2px}
+  .lore-nav-item{width:auto;border-left:none;border-bottom:2px solid transparent;padding:8px 14px}
+  .lore-nav-item.active{border-bottom-color:var(--red);border-left-color:transparent}
+  .char-detail.open{grid-template-columns:1fr;gap:30px}
+  footer{flex-direction:column;gap:12px;text-align:center;padding:28px}
+  .scroll-hint{left:28px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">BREAK<span>THROUGH</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-page="home">Home</button>
+    <button class="nav-tab" data-page="chapters">Chapters</button>
+    <button class="nav-tab" data-page="characters">Characters</button>
+    <button class="nav-tab" data-page="gear">The Kit</button>
+    <button class="nav-tab" data-page="lore">World</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-left">
+      <p class="eyebrow">A Webcomic &nbsp;·&nbsp; Vol. I — In Development</p>
+      <h1 class="hero-title">BREAK<span>THROUGH</span></h1>
+      <p class="hero-subtitle">A kid with no powers, a pair of modified dress shoes, and a system so tight it shouldn't work.<br>It does.</p>
+      <p class="scroll-hint">Scroll for the pitch</p>
+    </div>
+    <div class="hero-right">
+      <div class="shoe-side">
+        <div class="shoe-graphic">
+          <p class="shoe-label">Schematic — Heel Deploy System</p>
+          <svg class="shoe-svg" viewBox="0 0 280 190" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M30 120 Q42 78 82 68 L202 63 Q244 63 252 90 L252 120 Z" stroke="#2a2a2a" stroke-width="1.5" fill="#141414"/>
+            <rect x="28" y="118" width="226" height="18" rx="2" fill="#111" stroke="#222" stroke-width="1"/>
+            <line class="wheel-line" x1="88" y1="136" x2="192" y2="136" stroke="#c0392b" stroke-width="1.5" stroke-dasharray="4 3"/>
+            <circle cx="118" cy="143" r="9" stroke="#c0392b" stroke-width="1.5" fill="none" opacity=".6"/>
+            <circle cx="162" cy="143" r="9" stroke="#c0392b" stroke-width="1.5" fill="none" opacity=".6"/>
+            <path d="M228 136 L252 136 L260 148 L220 148 Z" fill="#c0392b" opacity=".15" stroke="#c0392b" stroke-width="1"/>
+            <line class="wheel-line" x1="260" y1="148" x2="274" y2="162" stroke="#c0392b" stroke-width="1" opacity=".5"/>
+            <line class="wheel-line" x1="257" y1="153" x2="268" y2="168" stroke="#c0392b" stroke-width="1" opacity=".3"/>
+            <circle class="pulse-dot" cx="118" cy="143" r="4" fill="#c0392b"/>
+            <circle class="pulse-dot" cx="162" cy="143" r="4" fill="#c0392b"/>
+            <circle class="pulse-dot" cx="240" cy="143" r="4" fill="#e74c3c"/>
+            <line x1="118" y1="154" x2="118" y2="172" stroke="#2a2a2a" stroke-width="1"/>
+            <text x="92" y="182" fill="#444" font-family="monospace" font-size="9">WHEEL·L</text>
+            <line x1="162" y1="154" x2="162" y2="172" stroke="#2a2a2a" stroke-width="1"/>
+            <text x="137" y="182" fill="#444" font-family="monospace" font-size="9">WHEEL·R</text>
+            <path d="M42 68 Q54 46 74 40" stroke="#c0392b" stroke-width="1" stroke-dasharray="3 2" opacity=".4"/>
+            <text x="16" y="36" fill="#c0392b" font-family="monospace" font-size="8" opacity=".6">↑ TOE LIFT</text>
+            <text x="16" y="48" fill="#333" font-family="monospace" font-size="7.5">TRIGGERS DEPLOY</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marquee 1 — story-specific -->
+  <div class="marquee-wrap red-bg">
+    <div class="marquee-track">
+      <span>REPAIRS EVERYTHING BEFORE HE SLEEPS</span><span class="dot">◆</span>
+      <span>CHECKS THE PULSE EVERY TIME</span><span class="dot">◆</span>
+      <span>THE PLAN WAS ON PAPER BEFORE THE FIGHT STARTED</span><span class="dot">◆</span>
+      <span>THE SHOES ARE DRESS SHOES</span><span class="dot">◆</span>
+      <span>HE SLID UNDER THE MAN'S LEGS AND WENT HOME</span><span class="dot">◆</span>
+      <span>CANNOT HEAL OXYGEN LOSS</span><span class="dot">◆</span>
+      <span>REPAIRS EVERYTHING BEFORE HE SLEEPS</span><span class="dot">◆</span>
+      <span>CHECKS THE PULSE EVERY TIME</span><span class="dot">◆</span>
+      <span>THE PLAN WAS ON PAPER BEFORE THE FIGHT STARTED</span><span class="dot">◆</span>
+      <span>THE SHOES ARE DRESS SHOES</span><span class="dot">◆</span>
+      <span>HE SLID UNDER THE MAN'S LEGS AND WENT HOME</span><span class="dot">◆</span>
+      <span>CANNOT HEAL OXYGEN LOSS</span><span class="dot">◆</span>
+    </div>
+  </div>
+
+  <div class="logline reveal">
+    <p class="section-tag">The Pitch</p>
+    <p class="logline-text">
+      Sal Sagan is 18, just out of high school, interning at an engineering firm.
+      He has no superpower. He has <em>dress shoes with deployable wheels and micro-thrusters</em>,
+      a suit jacket with serrated collar lining, a pill he engineered himself —
+      and five years of judo.
+      In a world full of people with actual abilities, <em>he keeps winning.</em>
+    </p>
+  </div>
+
+  <section class="sec" style="padding-top:0">
+    <div class="grid-2">
+      <div class="premise-block reveal" data-num="01"><h3>The World</h3><p>Superpowers exist. Most people have minor ones — strength enhancement, skin hardening, regeneration. The kind that tip a street fight from unfair to impossible. Sal has none of these. He has better tools.</p></div>
+      <div class="premise-block reveal" data-num="02"><h3>The Hook</h3><p>Every fight reveals a gap in his system. He goes home, fixes the gap, and comes back. The story is about what happens when you apply engineering-level rigor to violence — and what that costs over time.</p></div>
+      <div class="premise-block reveal" data-num="03"><h3>The Stakes</h3><p>The compound formula starts working too well. The dose creeps up. By the time he's facing opponents who are actually dangerous, the chemistry might be the most dangerous thing in his corner.</p></div>
+      <div class="premise-block reveal" data-num="04"><h3>The Destination</h3><p>Saul Rayes — "Triple-S" — has never lost. He's been in this story since page one as a blurry figure at the edge of a second-place trophy photo. Everything Sal builds is pointing at him without knowing it.</p></div>
+    </div>
+  </section>
+
+  <div class="quote-panel reveal">
+    <p class="quote-text">"He checks the pulse of every person he puts down. He props them against the wall and makes sure their airway is clear. Not because anyone is watching. Just because he does."</p>
+    <p class="quote-attr">— Chapter 3 director's note. This is who he is.</p>
+  </div>
+
+  <!-- Marquee 2 — compound arc, dark -->
+  <div class="marquee-wrap dark-bg">
+    <div class="marquee-track rev">
+      <span>PILL TALLY: PRE-FIGHT FOCUS</span><span class="dot">◆</span>
+      <span>PILL TALLY: SLEEP</span><span class="dot">◆</span>
+      <span>PILL TALLY: PAIN</span><span class="dot">◆</span>
+      <span>PILL TALLY: MORNING</span><span class="dot">◆</span>
+      <span>GEN 1 → DRIFT → GEN 2</span><span class="dot">◆</span>
+      <span>OVERLOAD TO ZERO · CONTROLLED REBUILD</span><span class="dot">◆</span>
+      <span>BELL CURVE CONFIRMED · COST ACCEPTABLE</span><span class="dot">◆</span>
+      <span>PILL TALLY: PRE-FIGHT FOCUS</span><span class="dot">◆</span>
+      <span>PILL TALLY: SLEEP</span><span class="dot">◆</span>
+      <span>PILL TALLY: PAIN</span><span class="dot">◆</span>
+      <span>PILL TALLY: MORNING</span><span class="dot">◆</span>
+      <span>GEN 1 → DRIFT → GEN 2</span><span class="dot">◆</span>
+      <span>OVERLOAD TO ZERO · CONTROLLED REBUILD</span><span class="dot">◆</span>
+      <span>BELL CURVE CONFIRMED · COST ACCEPTABLE</span><span class="dot">◆</span>
+    </div>
+  </div>
+
+  <section class="ask reveal">
+    <p class="section-tag" style="justify-content:center">Why You Should Read This</p>
+    <h2 class="ask-title">GIVE IT<br>ONE CHAPTER</h2>
+    <p class="ask-body">Chapter 1 is 27 panels and one line of dialogue. If you don't want to know what happens next by the last panel, it's not for you. But you will.</p>
+    <div class="cta-row">
+      <button class="cta cta-primary" onclick="switchPage('chapters')">Read The Chapters</button>
+      <button class="cta cta-secondary" onclick="switchPage('characters')">Meet The Cast</button>
+    </div>
+  </section>
+  <footer><span class="f-title">BREAK<span>THROUGH</span></span><span class="f-note">Vol. I — Chapters 1–7 scripted &nbsp;·&nbsp; Art phase incoming</span></footer>
+</div>
+
+<!-- CHAPTERS -->
+<div id="page-chapters" class="page">
+  <div class="chapter-hero">
+    <p class="section-tag">Story Arc</p>
+    <h2 class="sec-title" style="margin-bottom:24px">Seven Chapters.<br>One Direction.</h2>
+    <div class="ch-nav" id="ch-nav"></div>
+  </div>
+  <div class="chapter-display">
+    <div class="chapter-sidebar" id="ch-sidebar"></div>
+    <div class="chapter-main" id="ch-main"></div>
+  </div>
+</div>
+
+<!-- CHARACTERS -->
+<div id="page-characters" class="page">
+  <section class="sec" style="padding-bottom:30px">
+    <p class="section-tag">The Cast</p>
+    <h2 class="sec-title">The People In<br>Sal's Way</h2>
+    <p class="sec-body" style="margin-top:0">Click any card to expand. Some are opponents. One is the destination.</p>
+  </section>
+  <div style="padding:2px"><div class="char-grid" id="char-grid"></div></div>
+  <footer><span class="f-title">BREAK<span>THROUGH</span></span><span class="f-note">Characters — Vol. I</span></footer>
+</div>
+
+<!-- GEAR -->
+<div id="page-gear" class="page">
+  <div class="gear-hero">
+    <p class="section-tag">Equipment</p>
+    <h2 class="sec-title">The Kit</h2>
+    <p class="sec-body">Everything Sal carries. Everything he built. Everything that will eventually need repair.</p>
+  </div>
+  <div style="padding:2px"><div class="gear-big-grid" id="gear-grid"></div></div>
+  <div class="marquee-wrap red-bg" style="margin-top:2px">
+    <div class="marquee-track">
+      <span>LOOKS LIKE DRESS SHOES FROM THREE FEET AWAY</span><span class="dot">◆</span>
+      <span>THE HARDER YOU GRIP THE WORSE IT GETS</span><span class="dot">◆</span>
+      <span>SLIGHTLY THICKER ON THE RIGHT TEMPLE ARM</span><span class="dot">◆</span>
+      <span>HARDWARE STORE PARTS · GRADUATE MATERIALS SCIENCE</span><span class="dot">◆</span>
+      <span>THREE SECONDS FULLY OFFLINE</span><span class="dot">◆</span>
+      <span>IT WAS ON THE DESK IN CHAPTER 1</span><span class="dot">◆</span>
+      <span>LOOKS LIKE DRESS SHOES FROM THREE FEET AWAY</span><span class="dot">◆</span>
+      <span>THE HARDER YOU GRIP THE WORSE IT GETS</span><span class="dot">◆</span>
+      <span>SLIGHTLY THICKER ON THE RIGHT TEMPLE ARM</span><span class="dot">◆</span>
+      <span>HARDWARE STORE PARTS · GRADUATE MATERIALS SCIENCE</span><span class="dot">◆</span>
+      <span>THREE SECONDS FULLY OFFLINE</span><span class="dot">◆</span>
+      <span>IT WAS ON THE DESK IN CHAPTER 1</span><span class="dot">◆</span>
+    </div>
+  </div>
+  <footer><span class="f-title">BREAK<span>THROUGH</span></span><span class="f-note">Equipment Reference — Vol. I</span></footer>
+</div>
+
+<!-- LORE -->
+<div id="page-lore" class="page">
+  <div class="lore-layout">
+    <div class="lore-sidebar" id="lore-sidebar"></div>
+    <div class="lore-content" id="lore-content"></div>
+  </div>
+</div>
+
+<script>
+const CHAPTERS=[{num:1,title:"I'm Ready",subtitle:"The Repair Desk",acts:[{label:"Act I",desc:"The Desk"},{label:"Flashbacks I–V",desc:"The Fight, Reconstructed"},{label:"Closing",desc:"Back to the Desk"}],hook:"27 panels. One line of dialogue. You know exactly who he is by the last panel.",body:["We open at 2am. Sal at his desk, back to us, fixing broken gear. Two split-open dress shoes. A suit jacket with a frayed collar. A pair of glasses with one temple arm slightly open. Bruised knuckles. He hasn't done anything about the bruises. He's just working.","The fight is told in flashbacks triggered by each piece of damaged equipment. The mugger. The glasses. The pill. The burst. The rear naked choke. Back to the desk. Everything repaired before he sleeps.","Chapter 1 is a character study disguised as an action sequence. By the time Sal says the one thing he says — \"I'm ready\" — the reader has already been told everything about him that matters."],moments:[{label:"The Speed Panels",text:"Panels 18–19: Sal at normal distance. Then directly behind the mugger. No motion lines. No blur. Just position change. The reader's brain fills in the gap. The mugger hasn't finished looking at his hands."},{label:"The Cost",text:"Panel 23: Walking away. One shoulder lower than the other. Faint tremor in his hand. He paid for tonight. He'll pay again next time. He already knows that."}],stats:[{num:"27",label:"Panels"},{num:"1",label:"Lines of dialogue"},{num:"0",label:"Wasted panels"}]},{num:2,title:"System",subtitle:"He Loses",acts:[{label:"Act I",desc:"The Engineering Firm"},{label:"Act II",desc:"The Weekend — Backyard & Rink"},{label:"Act III",desc:"The Ambush"},{label:"Act IV",desc:"The Escape"}],hook:"His world, his weekend, his rink. Then three powered strangers and his system fails for the first time.",body:["Chapter 2 is wider than Chapter 1. We see where he works — an engineering firm where he makes coffee runs and silently proves his senior colleague's load estimates wrong with a pen. We see his backyard rail lab. We see the rink, the one place his system turns off.","Then three people ambush him on the way home. A strength amplifier, a skin hardener, a regenerator. Their powers aren't flashy — just enough. His burst needs space and freedom of movement. One grip on his jacket from behind removes both.","He doesn't win. He survives by collapsing his weight and sliding under the Leader's legs on wheel-assisted pavement friction. The Regenerator doesn't even bother chasing — he just says 'go ahead then.'"],moments:[{label:"Final Panel",text:"Tight close-up. Cracked glasses. A cut above the cheekbone. His jaw is set. His expression is not angry. Not defeated. Not determined in a dramatic way. He looks like he is solving a problem."},{label:"The Rink",text:"Panel 13: The only panel in the chapter where he looks genuinely fluid. No tactical calculation visible. He's just moving. The wheels are out. He looks like someone who has been doing this for a long time. No speed lines. Clean, wide, open."}],stats:[{num:"3",label:"Opponents"},{num:"1",label:"Gap identified"},{num:"0",label:"Wins"}]},{num:3,title:"Formula",subtitle:"The Ointment, The Rematch",acts:[{label:"Act I",desc:"The Desk — Building The Machine"},{label:"Act II",desc:"The Rink, The Spot"},{label:"Act III",desc:"The Rematch — 5 Phases"},{label:"Act IV",desc:"The Exit"}],hook:"He builds a friction-coating machine in his apartment. Then he finds the people who jumped him and walks toward them on purpose.",body:["The plan is written in three columns — one per opponent — before the chapter leaves the desk. Under the Regenerator column, one line is underlined and circled: 'Cannot heal oxygen loss.' That line is the key to the chapter's hardest fight, sitting in his notes from the start.","The machine: two barrels, a heating element, a mixing chamber, a tap. Hardware store parts. He fills three identical vials using a scratch mark on the glass as his measure. Applies the solution to his jacket section by section. Then — the detail — applies a second coat to the shoe housing. Less friction on deploy. Faster burst.","Four opponents go down exactly as planned. The Regenerator forces the one improvisation: the collar serrations fuse his healing palms to the fabric. Sal rips his own coat off, uses it as a garrote. 'Cannot heal oxygen loss.' The plan worked."],moments:[{label:"Panels 33–34",text:"After all three are down, Sal props each one against the wall. Checks their airways. Same methodical care as lowering them to the pavement. There is no audience. It is simply what he does."},{label:"The Exit",text:"Wide panel. Far end of the alley. Sal mid-stride, turning the corner. Behind him, small in frame: three figures sitting upright, evenly spaced. Neat. He measured. The chapter ends on completion, not triumph."}],stats:[{num:"3",label:"Down"},{num:"1",label:"Improvisation required"},{num:"3",label:"Vials, same fill line"}]},{num:4,title:"Word Spreads",subtitle:"The Boss, The Photo, The Plaque",acts:[{label:"Act I",desc:"3 Locations — Story Moving"},{label:"Act II",desc:"The Office — The Ultimatum"},{label:"Act III",desc:"The Back Lot"},{label:"Act IV",desc:"Fired Anyway"}],hook:"Word reaches his workplace. His boss has a second-place plaque on the wall. In the background of the trophy photo: a figure we haven't been introduced to yet.",body:["Act I doesn't show Sal at all. Three locations, three groups of people, a story spreading — details mutating in transit but the core intact. No video. No official record. Just word of mouth in a city full of people with abilities.","The boss is the hardest fight Sal's had. He doesn't grab the jacket — he grabs the arm. He uses the grip to redirect momentum. His chin drops when the choke attempt comes. His son grabbed instinctively. This man grabs with intent. He was a tournament finalist. That is not nothing.","Sal wins. Gets fired by HR the next morning — manila envelope, no eye contact. He finishes the task he was on, sets the tool down for the last time, and walks out. The junior colleague watches from the window."],moments:[{label:"The Photo",text:"Panel 8: Tournament photo close-up. The boss in his prime. And in the background, partially visible, almost cropped out — another fighter. Taller. Broader smile. This is the first time Rayes appears in the story. He is not named. He is not the focus."},{label:"Pre-Fight Inventory",text:"Panel 10: Sal's free hand moves briefly to his belt buckle. A small press — checking. Then back to work. On first read this is nothing. On reread after Chapter 5, it lands as a pre-fight inventory check."}],stats:[{num:"1",label:"Win"},{num:"1",label:"Job lost"},{num:"1",label:"Figure in the background"}]},{num:5,title:"Escalation",subtitle:"The Kill",acts:[{label:"Act I",desc:"The Skin Hardener Trains"},{label:"Act II",desc:"The Confrontation"},{label:"Act III",desc:"He Closed The Gaps"},{label:"Act IV",desc:"Smoke and Dagger"},{label:"Act V",desc:"The Burial — 8 Panels, No Skip"}],hook:"He came back trained. He closed the gaps. He also brought a gun.",body:["Chapter 5 opens on the Skin Hardener — not Sal. He can now harden both fists simultaneously. He hardened his shin. He found the roller rink and watched Sal drill through the window. He picked the narrow passage with no rear exit and put the gun in his waistband before leaving his apartment.","The fight starts as a rematch and becomes something else entirely. The jaw hardens on both sides this time. The leg kick hits hardened shin. The grab catches Sal's wrist — bare skin, not jacket. When Sal closes distance and works body shots, the Skin Hardener shoves him back and produces the gun.","The smoke capsule ejects from the right temple tip of the glasses — the same glasses whose right arm was slightly thicker in Chapter 2. The belt buckle opens on a hinge — the same buckle visible on Sal's repair desk in Chapter 1. One cut. He catches him as he falls. He digs for eight panels. No montage. No skip."],moments:[{label:"The Reread Payoffs",text:"Two planted details from Chapters 1 and 2 pay off here. The belt buckle was always a weapon. The glasses temple tip was always a capsule dispenser. They just needed to be there first."},{label:"Panel 31 — The Hands",text:"Sal's hands. Red still at the edges of his fingernails where the soil didn't fully clean them. He looks at them. This is the panel the compound arc grows from."}],stats:[{num:"8",label:"Burial panels — no skips"},{num:"2",label:"Reread payoffs"},{num:"0",label:"Editorial comment"}]},{num:6,title:"The Circuit",subtitle:"The Wins. The Tally.",acts:[{label:"Act I",desc:"The Betting Rules"},{label:"Act II",desc:"Montage — Wins, Loss, Symptoms"},{label:"Act III",desc:"The First Crack — 3am"}],hook:"The pill tally starts at 'pre-fight focus.' By the end of the chapter it says 'morning.'",body:["Sal enters the underground betting circuit — forty people, folding chairs, industrial lighting. No weapons, no killing, bet on yourself or don't fight. He places his stake and wins in ninety seconds. The crowd doesn't know what to make of it.","The montage: wins stacking, money building, name spreading. But threaded through it, the pill tally page. Early entries: 'pre-fight focus.' Then 'the night after.' Then 'two nights after.' Then 'sleep.' Then 'pain.' Then just: 'morning.'","Panel 19: 3am. Sal awake — not from a nightmare, from the absence of sleep. He watches the ceiling for an hour. Then reaches for the bottle. Takes one. Lies back. This is the first time he takes it for something other than a fight or physical pain."],moments:[{label:"The Ledger",text:"Panel 5: The financial column beside the pill tally. Real money now — more than the engineering job would have paid in a year. He is noting it, not celebrating it. The pill tally page exists and the reader should clock it before it becomes the most important page in the book."},{label:"The Forfeit",text:"A spatial distortion fighter bends geometry around himself. Sal's burst takes him six feet and lands him two. Three failed approaches. He picks up his stake and walks out. He goes home and writes notes on spatial distortion. He doesn't have the answer yet."}],stats:[{num:"12+",label:"Circuit fights"},{num:"1",label:"Forfeit — no answer yet"},{num:"3am",label:"First non-fight dose"}]},{num:7,title:"Withdrawal",subtitle:"The Gen 2 System",acts:[{label:"Act I",desc:"Empty Bottle — The Wall"},{label:"Act II",desc:"The Fun Arc — Body Finds Its Floor"},{label:"Act III",desc:"The Solution — Gen 2"},{label:"Act IV",desc:"The Return — Speedster Fight + The Post"}],hook:"He runs out. He doesn't refill. The withdrawal is grinding, private, and shown in full. Then something clicks. Then he posts two words to a street fighter's social media page.",body:["The withdrawal isn't cinematic. It's a nervous system trying to regulate itself — panels tracking his hands across morning, afternoon, evening, morning again. The tremor pattern mapped. The body finding its own floor, however low.","The turn comes at a wrestling venue. A technical wrestler gets slammed and gets back up. A gambler pushes everything to center — all in. The line drops to zero and the body rebuilds from actual baseline. He stands up and goes home. He already has the formula.","Gen 2: two pills. First pill overloads to zero — three seconds, body completely offline. Second pill rebuilds controlled, bell curve, no spike, no drift. He tests it. Checks the stopwatch. Writes: 'No drift. Bell curve confirmed. Cost acceptable.' Draws a checkmark. Most understated triumph in the series."],moments:[{label:"The Speedster Fight",text:"The real speedster needs a step to reach full speed. That step is the window. Sal moves into the step — inside the acceleration curve — before the speed becomes relevant. One arm around the neck. The speedster bursts forward. Sal goes with it. Three steps. The choke is still seated."},{label:"The Post",text:"Panel 34: Close on the phone. He types a well-known street fighter's username. Posts two words. No context. No footage. Just the tag and the words. He puts his phone away. The hood era is over."}],stats:[{num:"3",label:"Seconds to zero"},{num:"2",label:"Pills, Gen 2"},{num:"∞",label:"Whatever comes next"}]}];
+
+const CHARACTERS=[{id:'sal',name:'SAL\nSAGAN',alias:'"Sagan the Sage" — 18 years old',preview:"Doesn't look like a fighter. That's load-bearing. Intern suit slightly too big in the shoulders. Skater's posture. He almost never looks surprised.",stats:[{key:'Grappling',val:88},{key:'Engineering',val:95},{key:'Raw Power',val:18},{key:'The System',val:100}],detail:["Slim, lean. Functional muscle from skating and grappling — nothing that reads as gym. Average height or slightly below. Never physically imposing next to powered characters. Silhouette: slim figure, slightly oversized suit jacket, clean shoe line. Posture is slightly forward-leaning, weight on the balls of his feet. A skater's resting stance even when standing still.","He almost never looks surprised. When things go wrong, his face tightens slightly. That's it. He checks the pulse of every person he puts down. He props them against the wall and makes sure their airway is clear. He repairs his gear before he sleeps. Not because anyone is watching. Just because he does.","He does not care about his hair. He wears the glasses because he thought they'd make him look more professional at the internship. He doesn't need them for vision."],quotes:[{text:"I'm ready.",src:"Chapter 1 — Final panel. The only line he says."},{text:"He looks like he is solving a problem.",src:"Chapter 2 — Director's note on the final panel."}]},{id:'rayes',name:'SAUL\nRAYES',alias:'"Triple-S" — The Solar Superstar. Nearly 40.',preview:"Tall, broad, the build of a veteran athlete who never stopped. He smiles the way someone smiles when they already know how the story ends.",stats:[{key:'Fighting',val:100},{key:'Experience',val:100},{key:'Losses',val:0},{key:'Unknown',val:55}],detail:["Nearly 40. Still obviously elite — slightly graying at the temples, a few old scars. The build of a veteran athlete who never stopped training. Controlled mass. He naturally takes up more space than the people around him.","His face IS his character. The grin is everything. Rayes smiles the way someone smiles when they already know how the story ends — not cruel, not kind. The smile of someone who finds the world permanently, genuinely amusing because he has never had reason not to.","He has been in this story since page one as a blurry figure in the background of someone else's second-place trophy photo. Everything Sal is building is, without knowing it, aimed at him."],quotes:[{text:"In the background of the photo — partially visible, almost cropped out — another fighter. Taller. Broader smile.",src:"Chapter 4 — Panel 8 director's note. First appearance."},{text:"He is just a figure in the background of someone else's second-place moment. That's exactly right.",src:"Chapter 4 — On Rayes as background presence."}]},{id:'leader',name:'THE\nLEADER',alias:'Strength Amplifier — The Trio',preview:"Big. Slow, deliberate movement. He doesn't rush because he doesn't have to. His grab is his whole game. He let Sal slide under his legs and never fully recovered his reputation.",stats:[{key:'Strength',val:85},{key:'Technique',val:40},{key:'Footwork',val:30},{key:'Rep (post-Ch2)',val:20}],detail:["Not movie-monster big — just large enough that when he moves, the space around him feels smaller. Wide shoulders, short neck, the build of someone whose power manifests physically. Slow, deliberate movement. He's the center of the trio's triangle formation.","He's had Sal in a grip twice. Lost both times — once because the ointment gave Sal nothing to grip, once because Sal slid under his legs. The story of him letting someone escape under his legs is now spreading through the same word-of-mouth network that made him feared.","He is in a hospital bed at the start of Chapter 4, which is how his father finds out about Sal."],quotes:[{text:"Real lost.",src:"Chapter 2 — His contribution to the opening threat."},{text:"(He's still in the hospital bed at the start of Chapter 4.)",src:"The consequences of Chapter 3."}]},{id:'regen',name:'THE\nREGENERATOR',alias:'Regenerator — The Trio',preview:"Medium build, relaxed posture. Never had to be in shape because getting hit doesn't cost him anything. Not lazy in a way that makes you underestimate him.",stats:[{key:'Durability',val:100},{key:'Aggression',val:35},{key:'Patience',val:80},{key:'Aerial Threat',val:0}],detail:["Soft around the edges. Casual clothes. He hangs back initially. His power makes him confident in a lazy way — he's used to being the last one standing without doing much.","Against Sal in Chapter 3 he's genuinely the hardest problem: takes damage, heals in real time, can't be finished by accumulated strikes. The grind against him should feel repetitive on purpose. Same loop, diminishing returns, nothing accumulating.","The collar serrations trap his healing palms to the fabric. His own ability becomes the restraint that lets the coat get looped around his neck. The plan said 'Cannot heal oxygen loss.' The plan was right."],quotes:[{text:"That's it?",src:"Chapter 2 — As Sal is on the ground. He sounds genuinely disappointed."},{text:"You're fast.",src:"Chapter 3 — Mid-grind. He means it. He's not worried yet."},{text:"Go ahead then.",src:"Chapter 2 — As Sal escapes. He didn't bother chasing."}]},{id:'hardener',name:'THE\nHARDENER',alias:'Skin Hardener — The Trio → Ch.5 Antagonist',preview:"Lean, quick. The most physically active of the three. Then he trained. Then he came back with closed gaps and a gun.",stats:[{key:'Hardening',val:78},{key:'Speed',val:70},{key:'Preparation',val:90},{key:'Survived Ch.5',val:0}],detail:["Light on his feet, hands up naturally. Previously could only focus hardening on one area at a time. By Chapter 5: both fists simultaneously, and his shin. He found the roller rink and watched Sal train through the window. He walked the route and found the narrow passage with no rear exit.","He asked for the rematch because he wanted to know if Sal had actually beaten him or just caught him. That's a legitimate question. He deserved an answer to it.","He brought the gun because he watched Sal train and understood: this is not a fair fight and it never was."],quotes:[{text:"I've been thinking about it every day.",src:"Chapter 5 — To Sal, before the rematch begins."},{text:"I didn't come here to lose again.",src:"Chapter 5 — As he raises the gun."}]},{id:'boss',name:'THE\nBOSS',alias:"Sal's Former Employer — Strength Ability",preview:"Second-place plaque on his office wall. State qualifier final. He lost to Rayes twenty years ago. He never recovered his ambition. His son is The Leader.",stats:[{key:'Strength',val:80},{key:'Technique',val:72},{key:'Chin Control',val:85},{key:'Still Employed',val:0}],detail:["Mid-40s. Thick forearms visible through a dress shirt. The second-place plaque is state qualifier level. He was tournament-finalist excellent. Then he lost to Rayes and something in his ambition never recovered.","His son is The Leader. His son is in a hospital bed. He challenges Sal in a back lot and fights completely differently than his son — chin down, angle correct, using grip to redirect momentum. He's had twenty years of deliberate training on top of his ability.","Sal beats him with a face crank that forces the chin up and exposes the carotid for half a second. That half-second is all the time the choke needs. Even properly seated, the choke takes longer than it should. This man was genuinely good."],quotes:[{text:"Nice jacket.",src:"Chapter 4 — Before the back lot fight. He knows about the ointment."},{text:"My son is in a hospital bed.",src:"Chapter 4 — The ultimatum."}]}];
+
+const GEAR_ITEMS=[{name:'THE SHOES',status:'OPERATIONAL\nCH.1 DAMAGE REPAIRED',desc:"Black leather oxfords. Classic dress shoes. Nothing unusual from three feet away. The sole is 2–3mm thicker than normal — basically unnoticeable unless you're looking. The most important prop in the comic.",specs:[{key:'Deploy',val:'Dorsiflexion (toe lift) splits sole seam',warn:false},{key:'Wheels',val:'2× inline, arch position, flush when retracted',warn:false},{key:'Thrust',val:'Micro-thrusters at heel, fires on deploy',warn:false},{key:'Sound',val:'Soft mechanical CLACK on deploy',warn:false},{key:'Retract',val:'Heel weight (toe-lift release)',warn:false},{key:'Ch.1 damage',val:'Hairline fracture, heel housing — repaired',warn:false},{key:'Ch.3 upgrade',val:'Friction ointment on housing — faster deploy',warn:false}]},{name:'THE SUIT',status:'CH.3: COLLAR REPLACED\nCH.5: COAT BURIED',desc:"Cheap intern suit. Slightly wrong size. Dark navy or charcoal. The hidden engineering is in the collar lining and, after Chapter 3, the friction coating on the full exterior.",specs:[{key:'Collar lining',val:'Micro-serrated strip sewn into inner seam',warn:false},{key:'Effect',val:'Bites into grip. Harder squeeze = worse.',warn:false},{key:'Visibility',val:'Completely invisible from outside',warn:false},{key:'Ointment',val:'Applied Ch.3+. Silver-grey, dries clear.',warn:false},{key:'Ointment effect',val:'No purchase for grip. Slides off fabric.',warn:false},{key:'Ch.3 event',val:'Coat used as garrote, collar torn — repaired',warn:false},{key:'Ch.5 event',val:'Coat used as burial wrap. Needs a new one.',warn:true}]},{name:'THE GLASSES',status:'ACTIVE\nCAPSULE COUNT: VARIABLE',desc:"Clean, minimal rectangular frames. He doesn't need them for vision. The right temple arm is very slightly thicker than the left. That's the only tell. Planted in Chapter 2. Paid off in Chapter 5.",specs:[{key:'Right arm',val:'Tiny mechanical compartment. Barely visible seam.',warn:false},{key:'Capsules',val:'3–4 loaded in row. Drop to palm on latch press.',warn:false},{key:'Deploy look',val:'Adjusting glasses at temple. Natural, practiced.',warn:false},{key:'Focus capsule',val:'Swallowed. Gen 1 compound. No visible effect.',warn:false},{key:'Smoke capsule',val:'Crushed between fingers. Immediate dense cloud.',warn:false},{key:'First use',val:'Focus capsule — Chapter 1',warn:false},{key:'Smoke payoff',val:'Chapter 5 — planted in Ch.2 desk shot',warn:false}]},{name:'THE COMPOUND',status:'GEN 2 ACTIVE\nBELL CURVE CONFIRMED',desc:"The most complex piece of Sal's kit and the one that nearly ends him. Gen 1 gives focus and pain suppression. Gen 2 is the same chassis with a complete rethink of the delivery system.",specs:[{key:'Gen 1 effect',val:'Focus sharpening, pain suppression',warn:false},{key:'Gen 1 issue',val:'Drift. Tolerance builds. Baseline erodes.',warn:true},{key:'Gen 2 Pill 1',val:'Overload to zero. Dense, dark. 3-sec blackout.',warn:false},{key:'Gen 2 Pill 2',val:'Controlled rebuild. Lighter, slow-dissolve.',warn:false},{key:'Gen 2 result',val:'Bell curve. No spike. No crash. No drift.',warn:false},{key:'Cost',val:'3 seconds fully offline, uncontrolled timing',warn:true},{key:'Tracking',val:'Pill tally: date, time, context. Every dose logged.',warn:false}]},{name:'BELT BUCKLE',status:'ACTIVE\nCH.1 PLANT → CH.5 PAYOFF',desc:"It was on his repair desk in Chapter 1, Panel 1. It looked like a belt buckle. It always was more than that. The reader who goes back after Chapter 5 will see it sitting there in the very first scene.",specs:[{key:'Appearance',val:'Standard belt buckle. Nothing unusual.',warn:false},{key:'Mechanism',val:'Face ejects forward on hinge at press point',warn:false},{key:'Blade',val:'1 inch, folded against back of buckle face',warn:false},{key:'Access',val:'Right hand to belt, press release point.',warn:false},{key:'First use',val:'Chapter 5 — inside smoke, from behind',warn:false},{key:'Pre-use signal',val:'Ch.4 Panel 10: Sal presses it. Inventory check.',warn:false}]},{name:'THE MACHINE',status:"OPERATIONAL\nSAL'S APARTMENT",desc:"A compound-synthesis machine built on the far end of Sal's desk. Self-built, functional, not polished. Hardware store parts and a graduate-level understanding of materials science.",specs:[{key:'Left barrel',val:'Fine white-grey powder (compound base)',warn:false},{key:'Right barrel',val:'Plastic pellets + heating element coil',warn:false},{key:'Output',val:'Tap → glass vials (scratch mark fill line)',warn:false},{key:'Dual use',val:'Pills AND friction ointment from same chassis',warn:false},{key:'Cold period',val:'Ch.7: machine off for weeks. Hands show it.',warn:true}]}];
+
+const LORE_SECTIONS=[{id:'world',label:'The World',title:'THE WORLD',subtitle:'Abilities, street level, no capes',content:`<p class="lore-body">Superpowers exist. They're not rare — most people in this city have minor versions of something. Not flight, not invincibility. Useful things. Practical things. The kind that tip a street encounter from unfair to impossible if you're on the wrong end.</p><p class="lore-body">The story doesn't name the city. It doesn't need to. Dense, working-class, overhead lighting that leaves gaps between pools of sodium light. Concrete. Chain-link fence. Back lots off streets you'd never visit on purpose.</p><div class="lore-callout"><p class="lore-callout-label">Design Note</p><p>No flight. No energy beams. No cosmic powers. The abilities in this story are the kind that make existing violence more efficient — strength, durability, healing, hardening. The gap between Sal and a powered opponent is real and consistent. He closes it with engineering, not plot armor.</p></div><p class="lore-body">The fighting world has two tracks: the street level where Sal starts and a sanctioned circuit built around powered competition. There are underground betting venues. There are reputations that move through word of mouth faster than any official record. There are people like Rayes, who sit at the top of a hierarchy most people in the story have never seen from close range.</p>`},{id:'abilities',label:'Ability Types',title:'ABILITY TYPES',subtitle:'What the city is running',content:`<p class="lore-body">Abilities in this world are categorized loosely by how they interact with physics. No formal taxonomy — just practical shorthand fighters use when reading a room.</p><div class="lore-list"><div class="lore-list-item"><div class="lore-list-key">Strength Amplification</div><div class="lore-list-val">Increased force output. The most common type. The boss, The Leader, and several circuit opponents run variations. Sal's system was built around the grip problem it creates.</div></div><div class="lore-list-item"><div class="lore-list-key">Skin Hardening</div><div class="lore-list-val">Density increase in specific body zones. Limited by concentration bandwidth — early Skin Hardener could only harden one area at a time. High ceiling if properly trained.</div></div><div class="lore-list-item"><div class="lore-list-key">Regeneration</div><div class="lore-list-val">Cellular repair at accelerated rate. The Regenerator's laziness is the limit, not the power. Healing cannot restore what isn't being delivered — carotid compression bypasses it entirely.</div></div><div class="lore-list-item"><div class="lore-list-key">Kinetic Storage</div><div class="lore-list-val">First circuit opponent: stores impact force, releases in bursts. Window between release and recharge is exploitable. Sal identified it before the fight started.</div></div><div class="lore-list-item"><div class="lore-list-key">Density Manipulation</div><div class="lore-list-val">Shifts between solid/semi-solid states. Half-second gap between shifts is the window. Sal noted it: "half-second gap — that dot is where I'm targeting."</div></div><div class="lore-list-item"><div class="lore-list-key">Spatial Distortion</div><div class="lore-list-val">Bends geometry around user. Sal's burst took him six feet and landed him two. He took the forfeit and went home to write notes. No answer yet.</div></div><div class="lore-list-item"><div class="lore-list-key">Genuine Speed</div><div class="lore-list-val">The Chapter 7 speedster: sustained high-speed movement, optimized over years. Faster top speed than Sal's burst. Same physics on the step from rest — that step is the only window.</div></div></div>`},{id:'locations',label:'Locations',title:'LOCATIONS',subtitle:'The spaces Sal moves through',content:`<p class="lore-body">The story is set in a single dense city. No establishing skylines. Just specific spaces that accumulate meaning through repeated use.</p><div class="lore-list"><div class="lore-list-item"><div class="lore-list-key">Sal's Apartment</div><div class="lore-list-val">Small. One overhead light over the desk. The machine on the far end. The desk where everything gets repaired before he sleeps. The chapter structure often begins and ends here.</div></div><div class="lore-list-item"><div class="lore-list-key">The Backyard</div><div class="lore-list-val">Shared apartment building space. DIY rails welded from steel pipe. A strip of smoother pavement he laid himself. Chalk marks — lines, angles, distances. Not a skate park. A lab.</div></div><div class="lore-list-item"><div class="lore-list-key">The Rink</div><div class="lore-list-val">Generic urban roller rink. Warm indoor light. The only place in the series where Sal looks genuinely fluid. The system turns off. The motion is just motion. The Skin Hardener found him here.</div></div><div class="lore-list-item"><div class="lore-list-key">The Engineering Firm</div><div class="lore-list-val">Glass partitions, white walls. Sal at a workbench — the only one in his row with tools out. He made coffee and proved senior colleagues wrong without speaking. He left for the last time in Chapter 4.</div></div><div class="lore-list-item"><div class="lore-list-key">The Circuit Venue</div><div class="lore-list-val">Repurposed warehouse. Forty people, folding chairs, industrial lighting. The crowd grows as Sal wins. By the speedster fight it's standing room only.</div></div><div class="lore-list-item"><div class="lore-list-key">The Narrow Passage</div><div class="lore-list-val">Between two buildings. No exit at the far end. The Skin Hardener walked this route specifically to find this spot. Sodium light from one end. Chapter 5 happens here.</div></div><div class="lore-list-item"><div class="lore-list-key">The Park Edge</div><div class="lore-list-val">The mound is small, neat, at the dark edge. Not visible from the main path. The city receives Sal back the same way it always does. It does not know what he is carrying.</div></div></div>`},{id:'compound',label:'Compound Arc',title:'THE COMPOUND',subtitle:'Gen 1 → Drift → Gen 2',content:`<p class="lore-body">The compound arc is the story's spine. It runs underneath everything else — visible in the pill tally, in the body inserts, in the hands. The reader who traces it backward from Chapter 7 can find it starting as early as the repair desk in Chapter 1.</p><div class="lore-callout"><p class="lore-callout-label">The Tally — Context Column</p><p>"pre-fight focus" → "pre-fight focus" → "pre-fight focus" → "the night after" → "two nights after" → "sleep" → "pain" → "morning"</p></div><p class="lore-body">Gen 1 works. That's the problem. It sharpens focus and suppresses pain. It's taken before fights. Then after fights. Then to sleep. Then at 3am because sleep doesn't come otherwise. The body's baseline erodes and the pill fills the gap — and then the gap is the pill.</p><p class="lore-body">The withdrawal is shown in full in Chapter 7. Not dramatized. Not montaged. Just: the tremor pattern mapped across morning, afternoon, evening, morning again. The body trying to regulate without the compound it became dependent on.</p><div class="lore-callout"><p class="lore-callout-label">Panel 31, Chapter 5 — The Root</p><p>Sal's hands. Red still at the edges of his fingernails. He looks at them. This is the panel the compound arc grows from. The compound will eventually promise to make the weight manageable. That promise will cost him everything.</p></div><p class="lore-body">Gen 2 is not a cure. It's an engineering solution to a chemistry problem. Two pills: overload to zero, controlled rebuild. Bell curve. No drift. But the three-second blackout — body completely offline, no control of timing — is a cost that will matter eventually.</p>`},{id:'reread',label:'Reread Payoffs',title:'REREAD PAYOFFS',subtitle:'What was always there',content:`<p class="lore-body">The comic is designed to reward rereads. Details planted in early chapters pay off without announcement — they're just there, in the frame, waiting. None of them are highlighted the first time.</p><div class="lore-list"><div class="lore-list-item"><div class="lore-list-key">The Belt Buckle</div><div class="lore-list-val">Chapter 1, Panel 1: visible on the repair desk. It looked like a belt buckle. It was always a weapon. Chapter 5 is the first time it deploys. On reread, Chapter 1 is different.</div></div><div class="lore-list-item"><div class="lore-list-key">The Glasses</div><div class="lore-list-val">Chapter 2 desk shot: right temple arm is very slightly thicker than the left. Chapter 5: the smoke capsule ejects from that exact tip. The reader who noticed is already satisfied before the payoff arrives.</div></div><div class="lore-list-item"><div class="lore-list-key">Shoe Ointment / Wheels</div><div class="lore-list-val">Chapter 3, Panel 7: Sal applies ointment to the shoe housing after the jacket. First-pass readers miss it. The speed improvement in Panel 9 is the reward for noticing.</div></div><div class="lore-list-item"><div class="lore-list-key">Pre-Fight Inventory</div><div class="lore-list-val">Chapter 4, Panel 10: Sal briefly touches his belt buckle before the back lot fight. Reads as nothing on first pass. On reread after Chapter 5: inventory check, same as always.</div></div><div class="lore-list-item"><div class="lore-list-key">Rayes in the Photo</div><div class="lore-list-val">Chapter 4, Panel 8: in the background of the boss's tournament photo, partially cropped out — a taller figure with a broader smile. First-time reader: who is that? Returning reader: oh.</div></div><div class="lore-list-item"><div class="lore-list-key">The Pill Tally</div><div class="lore-list-val">Chapter 6, Panel 5: the tally page is visible beside the financial ledger. The reader who notices it before Chapter 7 will feel the context column changing in real time.</div></div></div>`}];
+
+// NAV
+document.querySelectorAll('.nav-tab').forEach(t=>t.addEventListener('click',()=>switchPage(t.dataset.page)));
+function switchPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelector('[data-page="'+id+'"]').classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='characters')initChars();
+  if(id==='chapters')initChapters(0);
+  if(id==='gear')initGear();
+  if(id==='lore')initLore(0);
+}
+
+// CHAPTERS
+function initChapters(idx){
+  const nav=document.getElementById('ch-nav'),sb=document.getElementById('ch-sidebar'),main=document.getElementById('ch-main');
+  nav.innerHTML=CHAPTERS.map((c,i)=>`<button class="ch-btn${i===idx?' active':''}" onclick="switchChapter(${i})">CH.${c.num} — ${c.title}</button>`).join('');
+  const ch=CHAPTERS[idx];
+  sb.innerHTML=`<div class="ch-num">${String(ch.num).padStart(2,'0')}</div><div class="ch-tag">Chapter ${ch.num}</div><div class="ch-title">"${ch.title}"</div><div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;color:var(--gray);text-transform:uppercase;margin-bottom:6px;">Subtitle</div><div style="font-size:14px;font-weight:600;color:var(--off-white);margin-bottom:24px;">${ch.subtitle}</div><div class="ch-acts">${ch.acts.map(a=>`<div class="ch-act"><span>${a.label}</span>${a.desc}</div>`).join('')}</div>`;
+  main.innerHTML=`<div class="ch-hook">${ch.hook}</div>${ch.body.map(b=>`<p class="ch-body">${b}</p>`).join('')}<div class="ch-stat-row">${ch.stats.map(s=>`<div class="ch-stat"><span class="ch-stat-num">${s.num}</span><span class="ch-stat-label">${s.label}</span></div>`).join('')}</div>${ch.moments.map(m=>`<div class="ch-moment"><div class="ch-moment-label">${m.label}</div><p>${m.text}</p></div>`).join('')}${idx<CHAPTERS.length-1?`<button class="cta cta-primary" style="margin-top:40px" onclick="switchChapter(${idx+1})">NEXT: CH.${CHAPTERS[idx+1].num} — ${CHAPTERS[idx+1].title}</button>`:''}`;
+}
+window.switchChapter=i=>initChapters(i);
+
+// CHARACTERS
+let charOpen=null;
+function initChars(){
+  document.getElementById('char-grid').innerHTML=CHARACTERS.map((c,i)=>`<div class="char-card" onclick="toggleChar(${i})"><div class="char-card-top"><div class="char-card-name">${c.name.replace('\n','<br>')}</div><div class="char-card-alias">${c.alias}</div></div><div class="char-card-body"><p>${c.preview}</p><div class="char-card-stats">${c.stats.map(s=>`<div class="cstat"><span class="cstat-key">${s.key}</span><div class="cstat-bar"><div class="cstat-fill" style="width:${s.val}%"></div></div></div>`).join('')}</div></div></div><div class="char-detail" id="char-detail-${i}"><button class="char-detail-close" onclick="closeChar(event)">✕ Close</button><div><div class="detail-name">${c.name.replace('\n','<br>')}</div><div class="detail-alias">${c.alias}</div>${c.detail.map(d=>`<p class="detail-body">${d}</p>`).join('')}</div><div><div class="section-tag" style="margin-bottom:20px">Notable Moments</div><div class="detail-quotes">${c.quotes.map(q=>`<div class="detail-quote">"${q.text}"<div class="detail-quote-src">${q.src}</div></div>`).join('')}</div></div></div>`).join('');
+  setTimeout(()=>{document.querySelectorAll('.cstat-fill').forEach(f=>{const w=f.style.width;f.style.width='0';setTimeout(()=>f.style.width=w,200)})},100);
+}
+window.toggleChar=i=>{const d=document.getElementById('char-detail-'+i);if(d.classList.contains('open')){d.classList.remove('open');charOpen=null;}else{if(charOpen!==null)document.getElementById('char-detail-'+charOpen).classList.remove('open');d.classList.add('open');charOpen=i;setTimeout(()=>d.scrollIntoView({behavior:'smooth',block:'start'}),50);}};
+window.closeChar=e=>{e.stopPropagation();document.querySelectorAll('.char-detail').forEach(d=>d.classList.remove('open'));charOpen=null;};
+
+// GEAR
+function initGear(){
+  document.getElementById('gear-grid').innerHTML=GEAR_ITEMS.map(g=>`<div class="gear-card"><div class="gear-card-top"><div class="gear-card-name">${g.name}</div><div class="gear-card-status">${g.status.replace('\n','<br>')}</div></div><div class="gear-card-body"><p>${g.desc}</p><div class="gear-specs">${g.specs.map(s=>`<div class="gear-spec"><span class="gear-spec-key">${s.key}</span><span class="gear-spec-val${s.warn?' warn':''}">${s.val}</span></div>`).join('')}</div></div></div>`).join('');
+}
+
+// LORE
+function initLore(idx){
+  document.getElementById('lore-sidebar').innerHTML=LORE_SECTIONS.map((s,i)=>`<button class="lore-nav-item${i===idx?' active':''}" onclick="switchLore(${i})">${s.label}</button>`).join('');
+  renderLore(idx);
+}
+function renderLore(idx){
+  const s=LORE_SECTIONS[idx];
+  document.getElementById('lore-content').innerHTML=`<div class="lore-title">${s.title}</div><div class="lore-subtitle">${s.subtitle}</div>${s.content}`;
+}
+window.switchLore=i=>{document.querySelectorAll('.lore-nav-item').forEach((n,j)=>n.classList.toggle('active',j===i));renderLore(i);};
+
+// SCROLL REVEAL
+const ro=new IntersectionObserver(entries=>entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('visible'),i*70);}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+</script>
+</body>
+</html>
